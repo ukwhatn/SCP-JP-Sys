@@ -2,7 +2,9 @@ from fastapi import FastAPI
 from fastapi.responses import RedirectResponse
 
 # routers
-from routers import auth
+from routers.auth import auth
+
+
 
 app = FastAPI()
 

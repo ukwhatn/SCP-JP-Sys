@@ -4,6 +4,7 @@ postgres/
 
 ### Environment
 .idea
+*.env
 
 ### Python template
 # Byte-compiled / optimized / DLL files

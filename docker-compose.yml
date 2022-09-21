@@ -37,6 +37,8 @@ services:
       - nw_scp-jp-sys
     depends_on:
       - postgres
+    env_file:
+      - api-config.env
     restart: always
 
 volumes:
