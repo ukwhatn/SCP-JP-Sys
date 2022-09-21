@@ -7,11 +7,11 @@ router = APIRouter()
 
 sys.path.append("/app")
 
-import utils.oauth2.discord
+import utils.oauth2.discord_oauth2 as discord_oauth2
 
 # Import authentication utilities
 
-discord_oauth2 = utils.oauth2.discord.DiscordAuthorization(
+discord_oauth2 = discord_oauth2.DiscordAuthorization(
         authorize_url=os.environ.get("DISCORD_OAUTH2_AUTHORIZE"),
         tokenize_url=os.environ.get("DISCORD_OAUTH2_TOKENIZE"),
         revoke_url=os.environ.get("DISCORD_OAUTH2_REVOKE"),

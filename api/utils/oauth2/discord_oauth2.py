@@ -1,5 +1,4 @@
 from urllib.parse import urlencode
-from typing import Any
 
 import httpx
 
@@ -17,19 +16,12 @@ class DiscordAuthorization:
         self.redirect_url = redirect_url
 
     def create_authorization_url(self, scope: list[str]):
-        def parse_value(value: Any):
-            if isinstance(value, list):
-                return " ".join(value)
-            return value
-
-        parameters = {}
-        for key, value in {
+        parameters = {
             "client_id":     self.client_id,
             "redirect_uri":  self.redirect_url,
             "response_type": "code",
-            "scope":         scope
-        }.items():
-            parameters[key] = parse_value(value)
+            "scope":         " ".join(scope)
+        }
         return self.authorize_url + "?" + urlencode(parameters)
 
     def get_access_token(self, code: str):
@@ -80,7 +72,13 @@ class UserToken:
         }
         response = httpx.post(self.auth_object.tokenize_url, data=data)
         response.raise_for_status()
-        return UserToken(auth_object=self.auth_object, **response.json())
+        response_json = response.json()
+
+        self.access_token = response_json["access_token"]
+        self.token_type = response_json["token_type"]
+        self.expires_in = response_json["expires_in"]
+        self.refresh_token = response_json["refresh_token"]
+        self.scope = response_json["scope"]
 
     def get_client(self):
         return DiscordAPIClient(self)
@@ -89,15 +87,17 @@ class UserToken:
 class DiscordAPIClient:
     def __init__(self, token_object: UserToken):
         self.token_object = token_object
-        self.headers = {
+        self.base_uri = "https://discord.com/api/v10/"
+
+    def _get_headers(self):
+        return {
             "Authorization": f"{self.token_object.token_type} {self.token_object.access_token}"
         }
-        self.base_uri = "https://discord.com/api/v10/"
 
     def _get(self, url: str):
         response = httpx.get(
                 url=self.base_uri + url,
-                headers=self.headers
+                headers=self._get_headers()
         )
         response.raise_for_status()
         return response.json()
@@ -105,7 +105,7 @@ class DiscordAPIClient:
     def _post(self, url: str, body: dict):
         response = httpx.post(
                 url=self.base_uri + url,
-                headers=self.headers,
+                headers=self._get_headers(),
                 json=body
         )
         response.raise_for_status()
@@ -113,4 +113,3 @@ class DiscordAPIClient:
 
     def get_users_me(self):
         response = self._get("users/@me")
-        
