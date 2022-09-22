@@ -5,12 +5,16 @@ from fastapi import APIRouter
 
 router = APIRouter()
 
-if __name__ == '__main__':
+if __name__ == "__main__":
+    # for development
     from ...utils.oauth2 import discord_oauth2
     from ..responses import RedirectResponse
 else:
+    # in docker container
     sys.path.append("/app")
-    import utils.oauth2.discord_oauth2 as discord_oauth2
+    # noinspection PyUnresolvedReferences
+    from utils.oauth2 import discord_oauth2
+    # noinspection PyUnresolvedReferences
     from routers.responses import RedirectResponse
 
 # Import authentication utilities
