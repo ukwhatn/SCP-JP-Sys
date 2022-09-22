@@ -113,3 +113,4 @@ class DiscordAPIClient:
 
     def get_users_me(self):
         response = self._get("users/@me")
+        return response
