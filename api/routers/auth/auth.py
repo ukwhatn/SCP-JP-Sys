@@ -2,12 +2,16 @@ import os
 import sys
 
 from fastapi import APIRouter
-from fastapi.responses import RedirectResponse
+
 router = APIRouter()
 
-sys.path.append("/app")
-
-import utils.oauth2.discord_oauth2 as discord_oauth2
+if __name__ == '__main__':
+    from ...utils.oauth2 import discord_oauth2
+    from ..responses import RedirectResponse
+else:
+    sys.path.append("/app")
+    import utils.oauth2.discord_oauth2 as discord_oauth2
+    from routers.responses import RedirectResponse
 
 # Import authentication utilities
 
@@ -29,5 +33,5 @@ def discord_oauth2_start():
 @router.get("/auth/oauth2/discord/callback", tags=["OAuth2"])
 def discord_oauth2_callback(code: str):
     userTokenObject = discord_oauth2.get_access_token(code)
-
-
+    client = userTokenObject.get_client()
+    return client.get_users_me()
