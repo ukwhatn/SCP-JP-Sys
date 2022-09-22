@@ -12,6 +12,7 @@ services:
       - "127.0.0.1:${PORT_POSTGRES}:5432"
     volumes:
       - ./postgres:/var/lib/postgresql/data
+      - ./install/postgres/init:/docker-entrypoint-initdb.d
     restart: always
 
   pgadmin:
