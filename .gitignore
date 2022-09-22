@@ -1,6 +1,6 @@
 ### Ignored Dir
 pgadmin/
-postgres/
+/postgres/
 
 ### Environment
 .idea
