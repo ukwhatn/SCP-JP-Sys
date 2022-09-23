@@ -8,6 +8,7 @@ CREATE ROLE application_users WITH
   NOREPLICATION;
 
 -- create api user
+-- pass: Lqckon!wjLMBmsN!9aZPfuN8c
 CREATE ROLE api WITH
   LOGIN
   NOSUPERUSER
