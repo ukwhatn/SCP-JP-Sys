@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from urllib.parse import urlencode
 
 import httpx
@@ -24,7 +26,7 @@ class DiscordAuthorization:
         }
         return self.authorize_url + "?" + urlencode(parameters)
 
-    def get_access_token(self, code: str):
+    def get_access_token(self, code: str) -> bool | UserToken:
         data = {
             "client_id":     self.client_id,
             "client_secret": self.client_secret,
@@ -33,7 +35,10 @@ class DiscordAuthorization:
             "redirect_uri":  self.redirect_url,
         }
         response = httpx.post(self.tokenize_url, data=data)
-        response.raise_for_status()
+
+        if response.status_code != 200:
+            return False
+
         return UserToken(auth_object=self, **response.json())
 
 
