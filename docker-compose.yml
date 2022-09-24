@@ -10,6 +10,8 @@ services:
       TZ: "Asia/Tokyo"
     ports:
       - "127.0.0.1:${PORT_POSTGRES}:5432"
+    networks:
+      - nw_scp-jp-sys
     volumes:
       - ./postgres:/var/lib/postgresql/data
       - ./install/postgres/init:/docker-entrypoint-initdb.d
@@ -22,6 +24,8 @@ services:
     environment:
       PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+    networks:
+      - nw_scp-jp-sys
     volumes:
       - ./pgadmin:/var/lib/pgadmin
     depends_on:
@@ -40,6 +44,7 @@ services:
       - postgres
     env_file:
       - api-config.env
+      - .env
     restart: always
 
 volumes:
